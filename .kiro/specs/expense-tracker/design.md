@@ -92,6 +92,47 @@ interface Achievement {
 }
 ```
 
+**Budget (预算模型)**
+```typescript
+interface Budget {
+  id: number;
+  type: BudgetType;              // 月度/周度/分类
+  period: string;                // 时间段标识（如"2024-01"或"2024-W01"）
+  category?: string;             // 分类预算的分类名称（可选）
+  amount: number;                // 预算金额
+  spent: number;                 // 已花费金额
+  remaining: number;             // 剩余金额
+  percentage: number;            // 使用百分比
+  status: BudgetStatus;          // 正常/预警/超支
+  createdAt: number;
+  updatedAt: number;
+}
+
+enum BudgetType {
+  MONTHLY = 'monthly',
+  WEEKLY = 'weekly',
+  CATEGORY = 'category'
+}
+
+enum BudgetStatus {
+  NORMAL = 'normal',             // < 80%
+  WARNING = 'warning',           // 80% - 100%
+  EXCEEDED = 'exceeded'          // > 100%
+}
+```
+
+**ExportData (导出数据模型)**
+```typescript
+interface ExportData {
+  version: string;               // 数据版本
+  exportDate: number;            // 导出时间
+  transactions: Transaction[];
+  categories: Category[];
+  achievements: Achievement[];
+  budgets?: Budget[];
+}
+```
+
 **Summary (汇总统计模型)**
 ```typescript
 interface Summary {
@@ -183,6 +224,32 @@ class AchievementRepository {
 }
 ```
 
+**BudgetRepository**
+```typescript
+class BudgetRepository {
+  // 创建预算
+  async create(budget: Omit<Budget, 'id'>): Promise<Budget>
+  
+  // 更新预算
+  async update(id: number, budget: Partial<Budget>): Promise<Budget>
+  
+  // 删除预算
+  async delete(id: number): Promise<boolean>
+  
+  // 获取月度预算
+  async getMonthlyBudget(period: string): Promise<Budget | null>
+  
+  // 获取周度预算
+  async getWeeklyBudget(period: string): Promise<Budget | null>
+  
+  // 获取分类预算
+  async getCategoryBudgets(period: string): Promise<Budget[]>
+  
+  // 获取所有预算
+  async getAll(): Promise<Budget[]>
+}
+```
+
 #### 3. 业务逻辑层
 
 **TransactionService**
@@ -248,6 +315,58 @@ class StatisticsService {
 }
 ```
 
+**BudgetService**
+```typescript
+class BudgetService {
+  // 设置月度预算
+  async setMonthlyBudget(year: number, month: number, amount: number): Promise<Budget>
+  
+  // 设置周度预算
+  async setWeeklyBudget(year: number, week: number, amount: number): Promise<Budget>
+  
+  // 设置分类预算
+  async setCategoryBudget(period: string, category: string, amount: number): Promise<Budget>
+  
+  // 获取预算状态
+  async getBudgetStatus(budgetId: number): Promise<BudgetStatus>
+  
+  // 更新预算进度
+  async updateBudgetProgress(period: string): Promise<void>
+  
+  // 检查预算预警
+  async checkBudgetWarnings(): Promise<Budget[]>
+  
+  // 获取当前月度预算
+  async getCurrentMonthlyBudget(): Promise<Budget | null>
+  
+  // 获取当前周度预算
+  async getCurrentWeeklyBudget(): Promise<Budget | null>
+  
+  // 获取所有分类预算
+  async getCategoryBudgets(period: string): Promise<Budget[]>
+}
+```
+
+**ExportService**
+```typescript
+class ExportService {
+  // 导出为CSV格式
+  async exportToCSV(startDate?: number, endDate?: number): Promise<string>
+  
+  // 导出为JSON格式
+  async exportToJSON(startDate?: number, endDate?: number): Promise<ExportData>
+  
+  // 保存导出文件
+  async saveExportFile(content: string, filename: string, format: 'csv' | 'json'): Promise<string>
+  
+  // 生成CSV内容
+  generateCSVContent(transactions: Transaction[]): string
+  
+  // 生成完整备份数据
+  async generateFullBackup(): Promise<ExportData>
+}
+```
+
 #### 4. 表现层
 
 **页面组件**
@@ -259,6 +378,8 @@ class StatisticsService {
 - **QueryPage**: 查询页面，提供高级筛选功能
 - **MoodCalendarPage**: 情绪日历页面
 - **AchievementPage**: 成就页面
+- **BudgetPage**: 预算管理页面，显示预算设置和进度
+- **ExportPage**: 数据导出页面，提供导出选项
 
 **可复用组件**
 
@@ -270,6 +391,9 @@ class StatisticsService {
 - **LineChart**: 折线图组件
 - **SummaryCard**: 汇总卡片
 - **AchievementBadge**: 成就徽章
+- **BudgetProgressBar**: 预算进度条组件
+- **BudgetCard**: 预算卡片组件
+- **WarningAlert**: 预警提示组件
 
 ## 数据模型
 
@@ -315,11 +439,31 @@ CREATE TABLE categories (
 )
 ```
 
+**budgets 表**
+```sql
+CREATE TABLE budgets (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  type TEXT NOT NULL,
+  period TEXT NOT NULL,
+  category TEXT,
+  amount REAL NOT NULL,
+  spent REAL DEFAULT 0,
+  remaining REAL NOT NULL,
+  percentage REAL DEFAULT 0,
+  status TEXT DEFAULT 'normal',
+  created_at INTEGER NOT NULL,
+  updated_at INTEGER NOT NULL,
+  UNIQUE(type, period, category)
+)
+```
+
 ### 数据关系
 
 - Transaction 与 Category 是多对一关系（一个分类可以有多个交易）
 - Transaction 与 MoodType 是可选的一对一关系
 - Achievement 独立存储，通过业务逻辑与 Transaction 关联
+- Budget 与时间段和分类关联，通过业务逻辑计算支出进度
+- Budget 与 Transaction 通过时间段和分类间接关联
 
 ## 正确性属性
 
@@ -422,6 +566,30 @@ CREATE TABLE categories (
 **属性 19: 数据迁移的向后兼容性**
 *对于任何*旧版本的数据结构，执行迁移后，所有原有的交易记录都应该能被正确读取且数据完整
 **验证需求：11.5**
+
+**属性 20: 预算进度计算的准确性**
+*对于任何*预算和对应时间段的交易集合，预算的已花费金额应该等于该时间段内所有支出交易的金额之和，剩余金额应该等于预算金额减去已花费金额
+**验证需求：12.4, 12.7**
+
+**属性 21: 预算状态判断的正确性**
+*对于任何*预算，当使用百分比小于80%时状态应为正常，80%-100%时应为预警，大于100%时应为超支
+**验证需求：12.5, 12.6**
+
+**属性 22: 分类预算过滤的准确性**
+*对于任何*分类预算，计算已花费金额时应该只包含该分类的支出交易
+**验证需求：12.3, 12.8**
+
+**属性 23: CSV导出的完整性**
+*对于任何*交易记录集合，导出为CSV后再解析，应该能恢复所有关键字段（日期、类型、分类、金额、用途）
+**验证需求：13.2, 13.6**
+
+**属性 24: JSON导出的往返一致性**
+*对于任何*导出的JSON数据，应该包含所有交易记录、分类定义和成就数据，且数据结构完整
+**验证需求：13.3, 13.8**
+
+**属性 25: 日期范围导出的准确性**
+*对于任何*指定的日期范围，导出的交易记录都应该在该日期范围内
+**验证需求：13.5**
 
 ## 错误处理
 

@@ -1,5 +1,14 @@
 {
   "src": [
-    "pages/Index"
+    "pages/Index",
+    "pages/AddTransactionPage",
+    "pages/MonthViewPage",
+    "pages/QueryPage",
+    "pages/StatisticsPage",
+    "pages/MoodCalendarPage",
+    "pages/AchievementPage",
+    "pages/BudgetPage",
+    "pages/ExportPage",
+    "pages/MorePage"
   ]
 }
