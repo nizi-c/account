@@ -7,26 +7,20 @@
 import { ThemeColors, ThemeSpacing, ThemeBorderRadius, ThemeShadow } from './ThemeConstants';
 
 /**
- * 卡片样式配置
- */
-export interface CardStyleConfig {
-  backgroundColor: string | Color;
-  borderRadius: number;
-  padding: number;
-  margin?: number;
-  shadow?: ShadowStyle;
-  borderColor?: string;
-  borderWidth?: number;
-}
-
-/**
  * 阴影样式配置
  */
-export interface ShadowStyle {
+export class ShadowStyle {
   radius: number;
   color: string;
-  offsetX?: number;
-  offsetY?: number;
+  offsetX: number;
+  offsetY: number;
+
+  constructor(radius: number, color: string, offsetX: number, offsetY: number) {
+    this.radius = radius;
+    this.color = color;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
+  }
 }
 
 /**
@@ -40,6 +34,29 @@ export enum CardType {
 }
 
 /**
+ * 卡片样式配置类
+ */
+export class CardStyleConfig {
+  backgroundColor: string | Color = ThemeColors.BG_PRIMARY;
+  borderRadius: number = ThemeBorderRadius.CARD;
+  padding: number = ThemeSpacing.CARD_PADDING;
+  margin: number = 0;
+  shadow: ShadowStyle | null = null;
+  borderColor: string | null = null;
+  borderWidth: number = 0;
+}
+
+/**
+ * 容器样式配置类
+ */
+export class ContainerStyleConfig {
+  width: string = '100%';
+  height: string = '100%';
+  padding: number = 0;
+  backgroundColor: string | Color = ThemeColors.BG_TERTIARY;
+}
+
+/**
  * 卡片样式工具类
  */
 export class CardStyles {
@@ -48,107 +65,80 @@ export class CardStyles {
    * 需求：9.4 - 卡片样式
    */
   static getCardStyle(type: CardType = CardType.DEFAULT): CardStyleConfig {
+    const config = new CardStyleConfig();
+
     switch (type) {
       case CardType.DEFAULT:
-        return {
-          backgroundColor: ThemeColors.BG_PRIMARY,
-          borderRadius: ThemeBorderRadius.CARD,
-          padding: ThemeSpacing.CARD_PADDING,
-          shadow: ThemeShadow.SM
-        };
-      
+        config.shadow = ThemeShadow.SM;
+        break;
+
       case CardType.ELEVATED:
-        return {
-          backgroundColor: ThemeColors.BG_PRIMARY,
-          borderRadius: ThemeBorderRadius.CARD,
-          padding: ThemeSpacing.CARD_PADDING,
-          shadow: ThemeShadow.MD
-        };
-      
+        config.shadow = ThemeShadow.MD;
+        break;
+
       case CardType.OUTLINED:
-        return {
-          backgroundColor: ThemeColors.BG_PRIMARY,
-          borderRadius: ThemeBorderRadius.CARD,
-          padding: ThemeSpacing.CARD_PADDING,
-          borderColor: ThemeColors.BORDER_SECONDARY,
-          borderWidth: 1
-        };
-      
+        config.borderColor = ThemeColors.BORDER_SECONDARY;
+        config.borderWidth = 1;
+        break;
+
       case CardType.FLAT:
-        return {
-          backgroundColor: ThemeColors.BG_PRIMARY,
-          borderRadius: ThemeBorderRadius.CARD,
-          padding: ThemeSpacing.CARD_PADDING
-        };
-      
+        // 使用默认值
+        break;
+
       default:
         return CardStyles.getCardStyle(CardType.DEFAULT);
     }
+
+    return config;
   }
-  
+
   /**
    * 获取汇总卡片样式（用于显示统计数据）
    */
   static getSummaryCardStyle(): CardStyleConfig {
-    return {
-      backgroundColor: ThemeColors.BG_PRIMARY,
-      borderRadius: ThemeBorderRadius.CARD,
-      padding: ThemeSpacing.MD,
-      shadow: ThemeShadow.SM
-    };
+    const config = new CardStyleConfig();
+    config.padding = ThemeSpacing.MD;
+    config.shadow = ThemeShadow.SM;
+    return config;
   }
-  
+
   /**
    * 获取列表项卡片样式
    */
   static getListItemCardStyle(): CardStyleConfig {
-    return {
-      backgroundColor: ThemeColors.BG_PRIMARY,
-      borderRadius: ThemeBorderRadius.MD,
-      padding: ThemeSpacing.MD,
-      margin: ThemeSpacing.XS
-    };
+    const config = new CardStyleConfig();
+    config.borderRadius = ThemeBorderRadius.MD;
+    config.padding = ThemeSpacing.MD;
+    config.margin = ThemeSpacing.XS;
+    return config;
   }
-  
+
   /**
    * 获取信息卡片样式（带颜色背景）
    */
   static getInfoCardStyle(type: 'info' | 'success' | 'warning' | 'error' = 'info'): CardStyleConfig {
-    let backgroundColor: string;
-    
+    const config = new CardStyleConfig();
+
     switch (type) {
       case 'info':
-        backgroundColor = ThemeColors.INFO_LIGHTEST;
+        config.backgroundColor = ThemeColors.INFO_LIGHTEST;
         break;
       case 'success':
-        backgroundColor = ThemeColors.SUCCESS_LIGHTEST;
+        config.backgroundColor = ThemeColors.SUCCESS_LIGHTEST;
         break;
       case 'warning':
-        backgroundColor = ThemeColors.WARNING_LIGHTEST;
+        config.backgroundColor = ThemeColors.WARNING_LIGHTEST;
         break;
       case 'error':
-        backgroundColor = ThemeColors.ERROR_LIGHTEST;
+        config.backgroundColor = ThemeColors.ERROR_LIGHTEST;
         break;
       default:
-        backgroundColor = ThemeColors.INFO_LIGHTEST;
+        config.backgroundColor = ThemeColors.INFO_LIGHTEST;
     }
-    
-    return {
-      backgroundColor: backgroundColor,
-      borderRadius: ThemeBorderRadius.CARD,
-      padding: ThemeSpacing.MD
-    };
-  }
-}
 
-/**
- * 容器样式配置
- */
-export interface ContainerStyleConfig {
-  width: string;
-  height?: string;
-  padding?: number;
-  backgroundColor: string | Color;
+    config.padding = ThemeSpacing.MD;
+    return config;
+  }
 }
 
 /**
@@ -159,31 +149,24 @@ export class ContainerStyles {
    * 获取页面容器样式
    */
   static getPageContainer(): ContainerStyleConfig {
-    return {
-      width: '100%',
-      height: '100%',
-      backgroundColor: ThemeColors.BG_TERTIARY
-    };
+    return new ContainerStyleConfig();
   }
-  
+
   /**
    * 获取内容容器样式
    */
   static getContentContainer(): ContainerStyleConfig {
-    return {
-      width: '100%',
-      padding: ThemeSpacing.PAGE_PADDING,
-      backgroundColor: ThemeColors.BG_TERTIARY
-    };
+    const config = new ContainerStyleConfig();
+    config.padding = ThemeSpacing.PAGE_PADDING;
+    return config;
   }
-  
+
   /**
    * 获取白色背景容器样式
    */
   static getWhiteContainer(): ContainerStyleConfig {
-    return {
-      width: '100%',
-      backgroundColor: ThemeColors.BG_PRIMARY
-    };
+    const config = new ContainerStyleConfig();
+    config.backgroundColor = ThemeColors.BG_PRIMARY;
+    return config;
   }
 }

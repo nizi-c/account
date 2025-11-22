@@ -43,8 +43,7 @@ export {
 } from './InputStyles';
 
 export { 
-  TextStyles, 
-  TextStyleHelper
+  TextStyles
 } from './TextStyles';
 
 export { 
