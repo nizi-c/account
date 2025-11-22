@@ -38,7 +38,7 @@ export class Toast {
    * 显示成功提示
    */
   static success(message: string, duration?: number): void {
-    this.show({
+    Toast.show({
       message: `✓ ${message}`,
       type: ToastType.SUCCESS,
       duration
@@ -49,7 +49,7 @@ export class Toast {
    * 显示错误提示
    */
   static error(message: string, duration?: number): void {
-    this.show({
+    Toast.show({
       message: `✗ ${message}`,
       type: ToastType.ERROR,
       duration
@@ -60,7 +60,7 @@ export class Toast {
    * 显示警告提示
    */
   static warning(message: string, duration?: number): void {
-    this.show({
+    Toast.show({
       message: `⚠ ${message}`,
       type: ToastType.WARNING,
       duration
@@ -71,7 +71,7 @@ export class Toast {
    * 显示信息提示
    */
   static info(message: string, duration?: number): void {
-    this.show({
+    Toast.show({
       message: `ℹ ${message}`,
       type: ToastType.INFO,
       duration
@@ -84,8 +84,8 @@ export class Toast {
   static show(config: ToastConfig): void {
     promptAction.showToast({
       message: config.message,
-      duration: config.duration || this.DEFAULT_DURATION,
-      bottom: config.bottom || this.DEFAULT_BOTTOM
+      duration: config.duration || Toast.DEFAULT_DURATION,
+      bottom: config.bottom || Toast.DEFAULT_BOTTOM
     });
   }
 }

@@ -14,9 +14,19 @@ export interface CardStyleConfig {
   borderRadius: number;
   padding: number;
   margin?: number;
-  shadow?: any;
+  shadow?: ShadowStyle;
   borderColor?: string;
   borderWidth?: number;
+}
+
+/**
+ * 阴影样式配置
+ */
+export interface ShadowStyle {
+  radius: number;
+  color: string;
+  offsetX?: number;
+  offsetY?: number;
 }
 
 /**
@@ -72,7 +82,7 @@ export class CardStyles {
         };
       
       default:
-        return this.getCardStyle(CardType.DEFAULT);
+        return CardStyles.getCardStyle(CardType.DEFAULT);
     }
   }
   
@@ -132,13 +142,23 @@ export class CardStyles {
 }
 
 /**
+ * 容器样式配置
+ */
+export interface ContainerStyleConfig {
+  width: string;
+  height?: string;
+  padding?: number;
+  backgroundColor: string | Color;
+}
+
+/**
  * 容器样式工具类
  */
 export class ContainerStyles {
   /**
    * 获取页面容器样式
    */
-  static getPageContainer(): any {
+  static getPageContainer(): ContainerStyleConfig {
     return {
       width: '100%',
       height: '100%',
@@ -149,7 +169,7 @@ export class ContainerStyles {
   /**
    * 获取内容容器样式
    */
-  static getContentContainer(): any {
+  static getContentContainer(): ContainerStyleConfig {
     return {
       width: '100%',
       padding: ThemeSpacing.PAGE_PADDING,
@@ -160,7 +180,7 @@ export class ContainerStyles {
   /**
    * 获取白色背景容器样式
    */
-  static getWhiteContainer(): any {
+  static getWhiteContainer(): ContainerStyleConfig {
     return {
       width: '100%',
       backgroundColor: ThemeColors.BG_PRIMARY

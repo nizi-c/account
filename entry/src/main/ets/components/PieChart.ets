@@ -21,8 +21,8 @@ export interface PieChartSegment {
 @Component
 export struct PieChart {
   @Prop chartData: PieChartData;
-  @Prop width: number = 300;
-  @Prop height: number = 300;
+  @Prop chartWidth: number = 300;
+  @Prop chartHeight: number = 300;
   @State selectedSegment: number = -1;
   @State segments: PieChartSegment[] = [];
   
@@ -119,12 +119,12 @@ export struct PieChart {
    */
   private performDraw(context: CanvasRenderingContext2D) {
     // Clear canvas
-    context.clearRect(0, 0, this.width, this.height);
+    context.clearRect(0, 0, this.chartWidth, this.chartHeight);
 
     // Calculate dimensions
-    this.centerX = this.width / 2;
-    this.centerY = this.height / 2;
-    this.radius = Math.min(this.width, this.height) * 0.35;
+    this.centerX = this.chartWidth / 2;
+    this.centerY = this.chartHeight / 2;
+    this.radius = Math.min(this.chartWidth, this.chartHeight) * 0.35;
 
     // Draw each segment
     this.segments.forEach((segment, index) => {
@@ -180,12 +180,12 @@ export struct PieChart {
    * Draw empty state
    */
   private drawEmptyState(context: CanvasRenderingContext2D) {
-    context.clearRect(0, 0, this.width, this.height);
+    context.clearRect(0, 0, this.chartWidth, this.chartHeight);
     context.fillStyle = '#999999';
     context.font = '16px sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('暂无数据', this.width / 2, this.height / 2);
+    context.fillText('暂无数据', this.chartWidth / 2, this.chartHeight / 2);
   }
 
   /**
@@ -246,8 +246,8 @@ export struct PieChart {
     Column() {
       // Canvas for pie chart
       Canvas(this.canvasContext)
-        .width(this.width)
-        .height(this.height)
+        .width(this.chartWidth)
+        .height(this.chartHeight)
         .onReady(() => {
           if (this.canvasContext) {
             this.drawPieChart(this.canvasContext);

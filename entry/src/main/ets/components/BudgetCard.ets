@@ -36,7 +36,9 @@ export struct BudgetCard {
   private getPeriodLabel(): string {
     if (this.budget.type === BudgetType.MONTHLY) {
       // Format: 2024-01 -> 2024年1月
-      const [year, month] = this.budget.period.split('-');
+      const parts = this.budget.period.split('-');
+      const year = parts[0];
+      const month = parts[1];
       return `${year}年${parseInt(month)}月`;
     } else if (this.budget.type === BudgetType.WEEKLY) {
       // Format: 2024-W01 -> 2024年第1周

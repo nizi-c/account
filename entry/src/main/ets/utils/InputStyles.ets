@@ -53,15 +53,27 @@ export class InputStyles {
    * 需求：9.4 - 输入框样式
    */
   static getInputStyle(size: InputSize = InputSize.MEDIUM, state: InputState = InputState.NORMAL): InputStyleConfig {
-    const baseConfig = this.getBaseStyle();
-    const sizeConfig = this.getSizeConfig(size);
-    const stateConfig = this.getStateConfig(state);
+    const baseConfig = InputStyles.getBaseStyle();
+    const sizeConfig = InputStyles.getSizeConfig(size);
+    const stateConfig = InputStyles.getStateConfig(state);
     
-    return {
-      ...baseConfig,
-      ...sizeConfig,
-      ...stateConfig
+    const result: InputStyleConfig = {
+      backgroundColor: baseConfig.backgroundColor,
+      borderColor: stateConfig.borderColor || baseConfig.borderColor,
+      borderWidth: baseConfig.borderWidth,
+      borderRadius: baseConfig.borderRadius,
+      height: sizeConfig.height || baseConfig.height,
+      padding: sizeConfig.padding || baseConfig.padding,
+      fontSize: sizeConfig.fontSize || baseConfig.fontSize,
+      fontColor: stateConfig.fontColor || baseConfig.fontColor,
+      placeholderColor: baseConfig.placeholderColor,
+      focusBorderColor: baseConfig.focusBorderColor,
+      errorBorderColor: baseConfig.errorBorderColor,
+      disabledBackgroundColor: baseConfig.disabledBackgroundColor,
+      disabledFontColor: baseConfig.disabledFontColor
     };
+    
+    return result;
   }
   
   /**
@@ -112,7 +124,7 @@ export class InputStyles {
         };
       
       default:
-        return this.getSizeConfig(InputSize.MEDIUM);
+        return InputStyles.getSizeConfig(InputSize.MEDIUM);
     }
   }
   
@@ -144,7 +156,7 @@ export class InputStyles {
         };
       
       default:
-        return this.getStateConfig(InputState.NORMAL);
+        return InputStyles.getStateConfig(InputState.NORMAL);
     }
   }
   
@@ -152,9 +164,21 @@ export class InputStyles {
    * 获取文本域样式
    */
   static getTextAreaStyle(minHeight: number = 100): Partial<InputStyleConfig> {
+    const baseStyle = InputStyles.getBaseStyle();
     return {
-      ...this.getBaseStyle(),
-      height: minHeight
+      backgroundColor: baseStyle.backgroundColor,
+      borderColor: baseStyle.borderColor,
+      borderWidth: baseStyle.borderWidth,
+      borderRadius: baseStyle.borderRadius,
+      height: minHeight,
+      padding: baseStyle.padding,
+      fontSize: baseStyle.fontSize,
+      fontColor: baseStyle.fontColor,
+      placeholderColor: baseStyle.placeholderColor,
+      focusBorderColor: baseStyle.focusBorderColor,
+      errorBorderColor: baseStyle.errorBorderColor,
+      disabledBackgroundColor: baseStyle.disabledBackgroundColor,
+      disabledFontColor: baseStyle.disabledFontColor
     };
   }
   
@@ -162,12 +186,33 @@ export class InputStyles {
    * 获取搜索框样式
    */
   static getSearchInputStyle(): InputStyleConfig {
+    const baseStyle = InputStyles.getBaseStyle();
     return {
-      ...this.getBaseStyle(),
+      backgroundColor: ThemeColors.BG_SECONDARY,
+      borderColor: baseStyle.borderColor,
+      borderWidth: baseStyle.borderWidth,
       borderRadius: ThemeBorderRadius.XXL,
-      backgroundColor: ThemeColors.BG_SECONDARY
+      height: baseStyle.height,
+      padding: baseStyle.padding,
+      fontSize: baseStyle.fontSize,
+      fontColor: baseStyle.fontColor,
+      placeholderColor: baseStyle.placeholderColor,
+      focusBorderColor: baseStyle.focusBorderColor,
+      errorBorderColor: baseStyle.errorBorderColor,
+      disabledBackgroundColor: baseStyle.disabledBackgroundColor,
+      disabledFontColor: baseStyle.disabledFontColor
     };
   }
+}
+
+/**
+ * 表单标签样式配置
+ */
+export interface LabelStyleConfig {
+  fontSize: number;
+  fontColor: string | Color;
+  marginBottom?: number;
+  marginTop?: number;
 }
 
 /**
@@ -177,7 +222,7 @@ export class FormLabelStyles {
   /**
    * 获取表单标签样式
    */
-  static getLabelStyle(required: boolean = false): any {
+  static getLabelStyle(required: boolean = false): LabelStyleConfig {
     return {
       fontSize: ThemeTypography.FONT_SIZE_BODY_SMALL,
       fontColor: ThemeColors.TEXT_SECONDARY,
@@ -188,7 +233,7 @@ export class FormLabelStyles {
   /**
    * 获取必填标记样式
    */
-  static getRequiredMarkStyle(): any {
+  static getRequiredMarkStyle(): LabelStyleConfig {
     return {
       fontSize: ThemeTypography.FONT_SIZE_BODY_SMALL,
       fontColor: ThemeColors.ERROR
@@ -198,7 +243,7 @@ export class FormLabelStyles {
   /**
    * 获取错误提示样式
    */
-  static getErrorMessageStyle(): any {
+  static getErrorMessageStyle(): LabelStyleConfig {
     return {
       fontSize: ThemeTypography.FONT_SIZE_CAPTION,
       fontColor: ThemeColors.ERROR,
@@ -209,7 +254,7 @@ export class FormLabelStyles {
   /**
    * 获取帮助文本样式
    */
-  static getHelpTextStyle(): any {
+  static getHelpTextStyle(): LabelStyleConfig {
     return {
       fontSize: ThemeTypography.FONT_SIZE_CAPTION,
       fontColor: ThemeColors.TEXT_TERTIARY,

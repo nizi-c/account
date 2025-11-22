@@ -23,22 +23,22 @@ export struct ErrorDisplay {
       // 错误图标
       Text('⚠️')
         .fontSize(48)
-        .margin({ bottom: ThemeSpacing.md })
+        .margin({ bottom: ThemeSpacing.MD })
 
       // 错误消息
       Text(this.message)
         .fontSize(16)
         .fontWeight(FontWeight.Medium)
-        .fontColor(ThemeColors.textPrimary)
+        .fontColor(ThemeColors.TEXT_PRIMARY)
         .textAlign(TextAlign.Center)
 
       // 错误描述
       if (this.description) {
         Text(this.description)
           .fontSize(14)
-          .fontColor(ThemeColors.textSecondary)
+          .fontColor(ThemeColors.TEXT_SECONDARY)
           .textAlign(TextAlign.Center)
-          .margin({ top: ThemeSpacing.sm })
+          .margin({ top: ThemeSpacing.SM })
           .maxLines(3)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
       }
@@ -47,11 +47,11 @@ export struct ErrorDisplay {
       if (this.showRetry && this.onRetry) {
         Button('重试')
           .fontSize(14)
-          .fontColor(ThemeColors.onPrimary)
-          .backgroundColor(ThemeColors.primary)
-          .borderRadius(ThemeBorderRadius.full)
-          .padding({ left: ThemeSpacing.xl, right: ThemeSpacing.xl, top: ThemeSpacing.sm, bottom: ThemeSpacing.sm })
-          .margin({ top: ThemeSpacing.lg })
+          .fontColor(Color.White)
+          .backgroundColor(ThemeColors.PRIMARY)
+          .borderRadius(ThemeBorderRadius.CIRCLE)
+          .padding({ left: ThemeSpacing.XL, right: ThemeSpacing.XL, top: ThemeSpacing.SM, bottom: ThemeSpacing.SM })
+          .margin({ top: ThemeSpacing.LG })
           .onClick(() => {
             if (this.onRetry) {
               this.onRetry();
@@ -60,7 +60,7 @@ export struct ErrorDisplay {
       }
     }
     .width('100%')
-    .padding(ThemeSpacing.xl)
+    .padding(ThemeSpacing.XL)
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
   }
@@ -82,22 +82,22 @@ export struct EmptyState {
       // 图标
       Text(this.icon)
         .fontSize(64)
-        .margin({ bottom: ThemeSpacing.md })
+        .margin({ bottom: ThemeSpacing.MD })
 
       // 消息
       Text(this.message)
         .fontSize(16)
         .fontWeight(FontWeight.Medium)
-        .fontColor(ThemeColors.textPrimary)
+        .fontColor(ThemeColors.TEXT_PRIMARY)
         .textAlign(TextAlign.Center)
 
       // 描述
       if (this.description) {
         Text(this.description)
           .fontSize(14)
-          .fontColor(ThemeColors.textSecondary)
+          .fontColor(ThemeColors.TEXT_SECONDARY)
           .textAlign(TextAlign.Center)
-          .margin({ top: ThemeSpacing.sm })
+          .margin({ top: ThemeSpacing.SM })
           .maxLines(3)
           .textOverflow({ overflow: TextOverflow.Ellipsis })
       }
@@ -106,11 +106,11 @@ export struct EmptyState {
       if (this.actionText && this.onAction) {
         Button(this.actionText)
           .fontSize(14)
-          .fontColor(ThemeColors.onPrimary)
-          .backgroundColor(ThemeColors.primary)
-          .borderRadius(ThemeBorderRadius.full)
-          .padding({ left: ThemeSpacing.xl, right: ThemeSpacing.xl, top: ThemeSpacing.sm, bottom: ThemeSpacing.sm })
-          .margin({ top: ThemeSpacing.lg })
+          .fontColor(Color.White)
+          .backgroundColor(ThemeColors.PRIMARY)
+          .borderRadius(ThemeBorderRadius.CIRCLE)
+          .padding({ left: ThemeSpacing.XL, right: ThemeSpacing.XL, top: ThemeSpacing.SM, bottom: ThemeSpacing.SM })
+          .margin({ top: ThemeSpacing.LG })
           .onClick(() => {
             if (this.onAction) {
               this.onAction();
@@ -119,7 +119,7 @@ export struct EmptyState {
       }
     }
     .width('100%')
-    .padding(ThemeSpacing.xl)
+    .padding(ThemeSpacing.XL)
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
   }
@@ -138,18 +138,18 @@ export struct InlineError {
       if (this.showIcon) {
         Text('⚠️')
           .fontSize(16)
-          .margin({ right: ThemeSpacing.xs })
+          .margin({ right: ThemeSpacing.XS })
       }
 
       Text(this.message)
         .fontSize(14)
-        .fontColor(ThemeColors.error)
+        .fontColor(ThemeColors.ERROR)
         .layoutWeight(1)
     }
     .width('100%')
-    .padding(ThemeSpacing.sm)
-    .backgroundColor(ThemeColors.errorContainer)
-    .borderRadius(ThemeBorderRadius.sm)
+    .padding(ThemeSpacing.SM)
+    .backgroundColor(ThemeColors.ERROR_LIGHTEST)
+    .borderRadius(ThemeBorderRadius.SM)
   }
 }
 
@@ -171,22 +171,22 @@ export struct ErrorPage {
       // 错误图标
       Text('😕')
         .fontSize(80)
-        .margin({ bottom: ThemeSpacing.lg })
+        .margin({ bottom: ThemeSpacing.LG })
 
       // 标题
       Text(this.title)
         .fontSize(24)
         .fontWeight(FontWeight.Bold)
-        .fontColor(ThemeColors.textPrimary)
+        .fontColor(ThemeColors.TEXT_PRIMARY)
         .textAlign(TextAlign.Center)
-        .margin({ bottom: ThemeSpacing.sm })
+        .margin({ bottom: ThemeSpacing.SM })
 
       // 错误消息
       Text(this.message)
         .fontSize(16)
-        .fontColor(ThemeColors.textSecondary)
+        .fontColor(ThemeColors.TEXT_SECONDARY)
         .textAlign(TextAlign.Center)
-        .margin({ bottom: ThemeSpacing.md })
+        .margin({ bottom: ThemeSpacing.MD })
         .maxLines(5)
         .textOverflow({ overflow: TextOverflow.Ellipsis })
 
@@ -194,9 +194,9 @@ export struct ErrorPage {
       if (this.errorCode) {
         Text(`错误代码: ${this.errorCode}`)
           .fontSize(12)
-          .fontColor(ThemeColors.textTertiary)
+          .fontColor(ThemeColors.TEXT_TERTIARY)
           .textAlign(TextAlign.Center)
-          .margin({ bottom: ThemeSpacing.lg })
+          .margin({ bottom: ThemeSpacing.LG })
       }
 
       // 操作按钮
@@ -204,12 +204,12 @@ export struct ErrorPage {
         if (this.showBack && this.onBack) {
           Button('返回')
             .fontSize(14)
-            .fontColor(ThemeColors.primary)
-            .backgroundColor(ThemeColors.surface)
-            .borderRadius(ThemeBorderRadius.full)
-            .border({ width: 1, color: ThemeColors.outline })
-            .padding({ left: ThemeSpacing.xl, right: ThemeSpacing.xl, top: ThemeSpacing.sm, bottom: ThemeSpacing.sm })
-            .margin({ right: ThemeSpacing.md })
+            .fontColor(ThemeColors.PRIMARY)
+            .backgroundColor(Color.White)
+            .borderRadius(ThemeBorderRadius.CIRCLE)
+            .border({ width: 1, color: ThemeColors.BORDER_PRIMARY })
+            .padding({ left: ThemeSpacing.XL, right: ThemeSpacing.XL, top: ThemeSpacing.SM, bottom: ThemeSpacing.SM })
+            .margin({ right: ThemeSpacing.MD })
             .onClick(() => {
               if (this.onBack) {
                 this.onBack();
@@ -220,10 +220,10 @@ export struct ErrorPage {
         if (this.showRetry && this.onRetry) {
           Button('重试')
             .fontSize(14)
-            .fontColor(ThemeColors.onPrimary)
-            .backgroundColor(ThemeColors.primary)
-            .borderRadius(ThemeBorderRadius.full)
-            .padding({ left: ThemeSpacing.xl, right: ThemeSpacing.xl, top: ThemeSpacing.sm, bottom: ThemeSpacing.sm })
+            .fontColor(Color.White)
+            .backgroundColor(ThemeColors.PRIMARY)
+            .borderRadius(ThemeBorderRadius.CIRCLE)
+            .padding({ left: ThemeSpacing.XL, right: ThemeSpacing.XL, top: ThemeSpacing.SM, bottom: ThemeSpacing.SM })
             .onClick(() => {
               if (this.onRetry) {
                 this.onRetry();
@@ -235,9 +235,9 @@ export struct ErrorPage {
     }
     .width('100%')
     .height('100%')
-    .padding(ThemeSpacing.xl)
+    .padding(ThemeSpacing.XL)
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.Center)
-    .backgroundColor(ThemeColors.background)
+    .backgroundColor(ThemeColors.BG_SECONDARY)
   }
 }

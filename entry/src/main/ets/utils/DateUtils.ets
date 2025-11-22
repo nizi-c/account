@@ -53,7 +53,7 @@ export class DateUtils {
    * Get end of week timestamp (Sunday)
    */
   static getEndOfWeek(timestamp: number): number {
-    const startOfWeek = this.getStartOfWeek(timestamp);
+    const startOfWeek = DateUtils.getStartOfWeek(timestamp);
     const date = new Date(startOfWeek);
     date.setDate(date.getDate() + 6);
     date.setHours(23, 59, 59, 999);

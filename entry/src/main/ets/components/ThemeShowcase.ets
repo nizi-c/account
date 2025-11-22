@@ -16,11 +16,16 @@ import {
   CardType,
   InputStyles,
   InputSize,
-  TextStyles,
-  FeedbackStyles,
-  BadgeStyles,
-  TagStyles
+  TextStyles
 } from '../utils';
+
+/**
+ * Color item interface
+ */
+interface ColorItem {
+  name: string;
+  color: string;
+}
 
 /**
  * 主题展示组件
@@ -44,19 +49,34 @@ export struct ThemeShowcase {
       .backgroundColor(ThemeColors.BG_PRIMARY)
       .padding(ThemeSpacing.SM)
 
-      // 内容区域
+      // 内容区域 - 使用条件渲染
       Scroll() {
         Column() {
+          // 使用条件渲染
           if (this.selectedTab === 0) {
-            this.buildColorSection();
-          } else if (this.selectedTab === 1) {
-            this.buildButtonSection();
-          } else if (this.selectedTab === 2) {
-            this.buildCardSection();
-          } else if (this.selectedTab === 3) {
-            this.buildInputSection();
-          } else if (this.selectedTab === 4) {
-            this.buildTextSection();
+            Column() {
+              this.buildColorSection();
+            }
+          }
+          if (this.selectedTab === 1) {
+            Column() {
+              this.buildButtonSection();
+            }
+          }
+          if (this.selectedTab === 2) {
+            Column() {
+              this.buildCardSection();
+            }
+          }
+          if (this.selectedTab === 3) {
+            Column() {
+              this.buildInputSection();
+            }
+          }
+          if (this.selectedTab === 4) {
+            Column() {
+              this.buildTextSection();
+            }
           }
         }
         .width('100%')
@@ -90,21 +110,18 @@ export struct ThemeShowcase {
         .fontWeight(ThemeTypography.FONT_WEIGHT_BOLD)
         .fontColor(ThemeColors.TEXT_PRIMARY)
 
-      // 主色调
       this.buildColorGroup('主色调', [
         { name: '主色', color: ThemeColors.PRIMARY },
         { name: '主色浅', color: ThemeColors.PRIMARY_LIGHT },
         { name: '主色深', color: ThemeColors.PRIMARY_DARK }
       ]);
 
-      // 语义颜色
       this.buildColorGroup('语义颜色', [
         { name: '成功', color: ThemeColors.SUCCESS },
         { name: '错误', color: ThemeColors.ERROR },
         { name: '警告', color: ThemeColors.WARNING }
       ]);
 
-      // 文本颜色
       this.buildColorGroup('文本颜色', [
         { name: '主要', color: ThemeColors.TEXT_PRIMARY },
         { name: '次要', color: ThemeColors.TEXT_SECONDARY },
@@ -116,7 +133,7 @@ export struct ThemeShowcase {
   }
 
   @Builder
-  buildColorGroup(title: string, colors: Array<{ name: string, color: string }>) {
+  buildColorGroup(title: string, colors: ColorItem[]) {
     Column({ space: ThemeSpacing.XS }) {
       Text(title)
         .fontSize(ThemeTypography.FONT_SIZE_BODY)
@@ -124,7 +141,7 @@ export struct ThemeShowcase {
         .fontColor(ThemeColors.TEXT_SECONDARY)
 
       Row({ space: ThemeSpacing.SM }) {
-        ForEach(colors, (item: { name: string, color: string }) => {
+        ForEach(colors, (item: ColorItem) => {
           Column() {
             Row()
               .width(60)
@@ -234,8 +251,6 @@ export struct ThemeShowcase {
 
   @Builder
   buildCardExample(label: string, type: CardType) {
-    const config = CardStyles.getCardStyle(type);
-
     Column() {
       Text(label)
         .fontSize(ThemeTypography.FONT_SIZE_BODY)
@@ -247,10 +262,10 @@ export struct ThemeShowcase {
         .fontColor(ThemeColors.TEXT_SECONDARY)
     }
     .width('100%')
-    .backgroundColor(config.backgroundColor)
-    .borderRadius(config.borderRadius)
-    .padding(config.padding)
-    .shadow(config.shadow)
+    .backgroundColor(CardStyles.getCardStyle(type).backgroundColor)
+    .borderRadius(CardStyles.getCardStyle(type).borderRadius)
+    .padding(CardStyles.getCardStyle(type).padding)
+    .shadow(CardStyles.getCardStyle(type).shadow)
     .alignItems(HorizontalAlign.Start)
   }
 

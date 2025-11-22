@@ -163,34 +163,44 @@ export class ThemeBorderRadius {
 }
 
 /**
+ * Shadow configuration interface
+ */
+interface ShadowConfig {
+  radius: number;
+  color: string;
+  offsetX: number;
+  offsetY: number;
+}
+
+/**
  * 阴影规范
  */
 export class ThemeShadow {
   // Shadow configurations
-  static readonly NONE = { radius: 0, color: ThemeColors.SHADOW_LIGHT, offsetX: 0, offsetY: 0 };
+  static readonly NONE: ShadowConfig = { radius: 0, color: ThemeColors.SHADOW_LIGHT, offsetX: 0, offsetY: 0 };
   
-  static readonly SM = {
+  static readonly SM: ShadowConfig = {
     radius: 4,
     color: ThemeColors.SHADOW_LIGHT,
     offsetX: 0,
     offsetY: 2
   };
   
-  static readonly MD = {
+  static readonly MD: ShadowConfig = {
     radius: 8,
     color: ThemeColors.SHADOW_LIGHT,
     offsetX: 0,
     offsetY: 4
   };
   
-  static readonly LG = {
+  static readonly LG: ShadowConfig = {
     radius: 12,
     color: ThemeColors.SHADOW_MEDIUM,
     offsetX: 0,
     offsetY: 6
   };
   
-  static readonly XL = {
+  static readonly XL: ShadowConfig = {
     radius: 16,
     color: ThemeColors.SHADOW_MEDIUM,
     offsetX: 0,
@@ -214,7 +224,8 @@ export class ThemeAnimation {
   static readonly CURVE_EASE_IN = Curve.EaseIn;
   static readonly CURVE_EASE_OUT = Curve.EaseOut;
   static readonly CURVE_EASE_IN_OUT = Curve.EaseInOut;
-  static readonly CURVE_SPRING = Curve.Spring;
+  // 注释掉不存在的 Curve.Spring
+  // static readonly CURVE_SPRING = Curve.Spring;
 }
 
 /**

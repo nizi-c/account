@@ -46,6 +46,31 @@ export interface ResponsiveConfig {
 }
 
 /**
+ * Chart size interface
+ */
+interface ChartSize {
+  width: number;
+  height: number;
+}
+
+/**
+ * Button size interface
+ */
+interface ButtonSize {
+  width: number;
+  height: number;
+}
+
+/**
+ * Responsive values interface
+ */
+interface ResponsiveValues<T> {
+  phone: T;
+  tablet?: T;
+  desktop?: T;
+}
+
+/**
  * 响应式工具类
  */
 export class ResponsiveUtils {
@@ -103,8 +128,8 @@ export class ResponsiveUtils {
    * 需求：10.1, 10.2, 10.4, 10.5
    */
   static getResponsiveConfig(screenWidth: number, screenHeight: number): ResponsiveConfig {
-    const deviceType = this.getDeviceType(screenWidth);
-    const orientation = this.getOrientation(screenWidth, screenHeight);
+    const deviceType = ResponsiveUtils.getDeviceType(screenWidth);
+    const orientation = ResponsiveUtils.getOrientation(screenWidth, screenHeight);
     
     let columns: number;
     let gutter: number;
@@ -168,9 +193,9 @@ export class ResponsiveUtils {
    * 获取图表尺寸
    * 需求：10.4
    */
-  static getChartSize(screenWidth: number, screenHeight: number): { width: number, height: number } {
-    const deviceType = this.getDeviceType(screenWidth);
-    const orientation = this.getOrientation(screenWidth, screenHeight);
+  static getChartSize(screenWidth: number, screenHeight: number): ChartSize {
+    const deviceType = ResponsiveUtils.getDeviceType(screenWidth);
+    const orientation = ResponsiveUtils.getOrientation(screenWidth, screenHeight);
     
     let width: number;
     let height: number;
@@ -194,7 +219,8 @@ export class ResponsiveUtils {
       height = 400;
     }
 
-    return { width, height };
+    const result: ChartSize = { width, height };
+    return result;
   }
 
   /**
@@ -206,7 +232,7 @@ export class ResponsiveUtils {
       return '100%';
     }
     
-    const columnWidth = this.getColumnWidth(
+    const columnWidth = ResponsiveUtils.getColumnWidth(
       screenWidth,
       config.columns,
       config.gutter,
@@ -221,7 +247,7 @@ export class ResponsiveUtils {
    * 需求：10.5
    */
   static getSidebarWidth(screenWidth: number): number {
-    const deviceType = this.getDeviceType(screenWidth);
+    const deviceType = ResponsiveUtils.getDeviceType(screenWidth);
     
     if (deviceType === DeviceType.PHONE) {
       return 0; // 手机不显示侧边栏
@@ -237,7 +263,7 @@ export class ResponsiveUtils {
    * 根据屏幕尺寸调整字体
    */
   static getFontScale(screenWidth: number): number {
-    const deviceType = this.getDeviceType(screenWidth);
+    const deviceType = ResponsiveUtils.getDeviceType(screenWidth);
     
     if (deviceType === DeviceType.PHONE) {
       return 1.0;
@@ -252,7 +278,7 @@ export class ResponsiveUtils {
    * 获取间距缩放比例
    */
   static getSpacingScale(screenWidth: number): number {
-    const deviceType = this.getDeviceType(screenWidth);
+    const deviceType = ResponsiveUtils.getDeviceType(screenWidth);
     
     if (deviceType === DeviceType.PHONE) {
       return 1.0;
@@ -264,15 +290,10 @@ export class ResponsiveUtils {
   }
 
   /**
-   * 计算响应式值
-   * 根据设备类型返回不同的值
+   * 响应式值配置接口
    */
-  static responsive<T>(screenWidth: number, values: {
-    phone: T,
-    tablet?: T,
-    desktop?: T
-  }): T {
-    const deviceType = this.getDeviceType(screenWidth);
+  static responsive<T>(screenWidth: number, values: ResponsiveValues<T>): T {
+    const deviceType = ResponsiveUtils.getDeviceType(screenWidth);
     
     if (deviceType === DeviceType.PHONE) {
       return values.phone;
@@ -288,7 +309,7 @@ export class ResponsiveUtils {
    * 用于列表和网格布局
    */
   static getGridColumns(screenWidth: number, screenHeight: number): number {
-    const config = this.getResponsiveConfig(screenWidth, screenHeight);
+    const config = ResponsiveUtils.getResponsiveConfig(screenWidth, screenHeight);
     return config.columns;
   }
 
@@ -303,7 +324,7 @@ export class ResponsiveUtils {
    * 获取列表项高度
    */
   static getListItemHeight(screenWidth: number): number {
-    return this.responsive(screenWidth, {
+    return ResponsiveUtils.responsive(screenWidth, {
       phone: 80,
       tablet: 90,
       desktop: 100
@@ -313,11 +334,12 @@ export class ResponsiveUtils {
   /**
    * 获取按钮尺寸
    */
-  static getButtonSize(screenWidth: number): { width: number, height: number } {
-    const scale = this.getSpacingScale(screenWidth);
-    return {
+  static getButtonSize(screenWidth: number): ButtonSize {
+    const scale = ResponsiveUtils.getSpacingScale(screenWidth);
+    const result: ButtonSize = {
       width: 48 * scale,
       height: 48 * scale
     };
+    return result;
   }
 }

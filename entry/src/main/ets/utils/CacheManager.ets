@@ -10,9 +10,16 @@ export interface CacheEntry<T> {
   ttl: number; // Time to live in milliseconds
 }
 
+// 定义具体的缓存值类型
+interface CacheValue<T = string | number | boolean | object> {
+  data: T;
+  timestamp: number;
+  ttl: number;
+}
+
 export class CacheManager {
   private static instance: CacheManager;
-  private cache: Map<string, CacheEntry<any>>;
+  private cache: Map<string, CacheValue<string | number | boolean | object>>;
   private readonly DEFAULT_TTL = 5 * 60 * 1000; // 5 minutes
 
   private constructor() {
@@ -32,20 +39,20 @@ export class CacheManager {
   /**
    * Set cache entry
    */
-  set<T>(key: string, data: T, ttl?: number): void {
-    const entry: CacheEntry<T> = {
-      data,
+  set<T extends string | number | boolean | object>(key: string, data: T, ttl?: number): void {
+    const entry: CacheValue<T> = {
+      data: data,
       timestamp: Date.now(),
       ttl: ttl || this.DEFAULT_TTL
     };
-    this.cache.set(key, entry);
+    this.cache.set(key, entry as CacheValue<string | number | boolean | object>);
   }
 
   /**
    * Get cache entry
    */
-  get<T>(key: string): T | null {
-    const entry = this.cache.get(key);
+  get<T extends string | number | boolean | object>(key: string): T | null {
+    const entry: CacheValue<string | number | boolean | object> | undefined = this.cache.get(key);
     
     if (!entry) {
       return null;
@@ -65,7 +72,8 @@ export class CacheManager {
    * Check if cache has valid entry
    */
   has(key: string): boolean {
-    return this.get(key) !== null;
+    const result = this.get<string | number | boolean | object>(key);
+    return result !== null;
   }
 
   /**
@@ -83,7 +91,8 @@ export class CacheManager {
     const keysToDelete: string[] = [];
     
     for (const key of this.cache.keys()) {
-      if (regex.test(key)) {
+      const entry: CacheValue<string | number | boolean | object> | undefined = this.cache.get(key);
+      if (entry && regex.test(key)) {
         keysToDelete.push(key);
       }
     }
@@ -112,9 +121,13 @@ export class CacheManager {
     const now = Date.now();
     const keysToDelete: string[] = [];
     
-    for (const [key, entry] of this.cache.entries()) {
-      if (now - entry.timestamp > entry.ttl) {
-        keysToDelete.push(key);
+    for (const key of this.cache.keys()) {
+      const entry: CacheValue | undefined = this.cache.get(key);
+      if (entry) {
+        const now = Date.now();
+        if (now - entry.timestamp > entry.ttl) {
+          keysToDelete.push(key);
+        }
       }
     }
     

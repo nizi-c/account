@@ -506,8 +506,8 @@ struct StatisticsPage {
         Column() {
           PieChart({
             chartData: this.pieChartData,
-            width: this.chartSize.width,
-            height: this.chartSize.height
+            chartWidth: this.chartSize.width,
+            chartHeight: this.chartSize.height
           })
         }
         .width('100%')
@@ -554,8 +554,8 @@ struct StatisticsPage {
         Column() {
           LineChart({
             chartData: this.lineChartData,
-            width: this.chartSize.width,
-            height: this.chartSize.height * 0.8
+            chartWidth: this.chartSize.width,
+            chartHeight: this.chartSize.height * 0.8
           })
         }
         .width('100%')

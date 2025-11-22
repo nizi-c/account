@@ -1,3 +1,4 @@
+
 import relationalStore from '@ohos.data.relationalStore';
 import {
   DATABASE_NAME,
@@ -5,6 +6,7 @@ import {
   ALL_TABLE_SCHEMAS,
   ALL_INDEX_SCHEMAS
 } from './DatabaseConfig';
+import { AppError, ErrorType } from './ErrorHandler';
 
 /**
  * Database Manager
@@ -46,7 +48,7 @@ export class DatabaseManager {
       return this.store;
     } catch (error) {
       console.error('Failed to initialize database:', error);
-      throw error;
+      throw new AppError('Database initialization failed', ErrorType.DATABASE, 'DB_INIT_ERROR', error);
     }
   }
 
@@ -63,7 +65,7 @@ export class DatabaseManager {
         await this.store.executeSql(schema);
       } catch (error) {
         console.error('Failed to create table:', error);
-        throw error;
+        throw new AppError('Table creation failed', ErrorType.DATABASE, 'TABLE_CREATE_ERROR', error);
       }
     }
   }

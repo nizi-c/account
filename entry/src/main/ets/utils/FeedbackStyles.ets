@@ -41,6 +41,72 @@ export interface ToastStyleConfig {
 }
 
 /**
+ * 骨架屏样式配置
+ */
+export interface SkeletonStyleConfig {
+  backgroundColor: string | Color;
+  borderRadius: number;
+}
+
+/**
+ * 进度条样式配置
+ */
+export interface ProgressBarStyleConfig {
+  color: string | Color;
+  backgroundColor: string | Color;
+  borderRadius: number;
+}
+
+/**
+ * 徽章样式配置
+ */
+export interface BadgeStyleConfig {
+  backgroundColor: string | Color;
+  fontColor: string | Color;
+  fontSize: number;
+  borderRadius: number;
+  padding: number;
+  paddingH?: number;
+}
+
+/**
+ * 点徽章样式配置
+ */
+export interface DotBadgeStyleConfig {
+  width: number;
+  height: number;
+  backgroundColor: string | Color;
+  borderRadius: number;
+}
+
+/**
+ * 计数徽章样式配置
+ */
+export interface CountBadgeStyleConfig {
+  minWidth: number;
+  height: number;
+  backgroundColor: string | Color;
+  fontColor: string | Color;
+  fontSize: number;
+  borderRadius: number;
+  padding: number;
+}
+
+/**
+ * 标签样式配置
+ */
+export interface TagStyleConfig {
+  backgroundColor: string | Color;
+  fontColor: string | Color;
+  borderColor: string | Color;
+  borderWidth: number;
+  fontSize: number;
+  borderRadius: number;
+  padding: number;
+  paddingH: number;
+}
+
+/**
  * 视觉反馈样式工具类
  */
 export class FeedbackStyles {
@@ -147,7 +213,7 @@ export class FeedbackStyles {
   /**
    * 获取骨架屏样式
    */
-  static getSkeletonStyle(): any {
+  static getSkeletonStyle(): SkeletonStyleConfig {
     return {
       backgroundColor: ThemeColors.BG_SECONDARY,
       borderRadius: ThemeBorderRadius.SM
@@ -157,7 +223,7 @@ export class FeedbackStyles {
   /**
    * 获取进度条样式
    */
-  static getProgressBarStyle(type: 'normal' | 'success' | 'warning' | 'error' = 'normal'): any {
+  static getProgressBarStyle(type: 'normal' | 'success' | 'warning' | 'error' = 'normal'): ProgressBarStyleConfig {
     let color: string;
     
     switch (type) {
@@ -219,7 +285,7 @@ export class BadgeStyles {
   /**
    * 获取徽章样式
    */
-  static getBadgeStyle(type: 'primary' | 'success' | 'warning' | 'error' | 'default' = 'default'): any {
+  static getBadgeStyle(type: 'primary' | 'success' | 'warning' | 'error' | 'default' = 'default'): BadgeStyleConfig {
     let backgroundColor: string;
     let fontColor: string | Color;
     
@@ -259,7 +325,7 @@ export class BadgeStyles {
   /**
    * 获取数字徽章样式（小红点）
    */
-  static getDotBadgeStyle(): any {
+  static getDotBadgeStyle(): DotBadgeStyleConfig {
     return {
       width: 8,
       height: 8,
@@ -271,7 +337,7 @@ export class BadgeStyles {
   /**
    * 获取计数徽章样式
    */
-  static getCountBadgeStyle(): any {
+  static getCountBadgeStyle(): CountBadgeStyleConfig {
     return {
       minWidth: 20,
       height: 20,
@@ -291,7 +357,7 @@ export class TagStyles {
   /**
    * 获取标签样式
    */
-  static getTagStyle(type: 'primary' | 'success' | 'warning' | 'error' | 'default' = 'default'): any {
+  static getTagStyle(type: 'primary' | 'success' | 'warning' | 'error' | 'default' = 'default'): TagStyleConfig {
     let backgroundColor: string;
     let fontColor: string;
     let borderColor: string;

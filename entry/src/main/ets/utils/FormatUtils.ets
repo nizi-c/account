@@ -11,7 +11,7 @@ export class FormatUtils {
    * @returns Formatted currency string (e.g., "¥1,234.56")
    */
   static formatCurrency(amount: number, currency: string = '¥'): string {
-    const formatted = this.formatNumber(amount, 2);
+    const formatted = FormatUtils.formatNumber(amount, 2);
     return `${currency}${formatted}`;
   }
 

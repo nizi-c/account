@@ -16,18 +16,28 @@ export interface LineChartPoint {
   label: string;
 }
 
+/**
+ * Chart padding interface
+ */
+interface ChartPadding {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
 @Component
 export struct LineChart {
   @Prop chartData: LineChartData;
-  @Prop width: number = 350;
-  @Prop height: number = 250;
+  @Prop chartWidth: number = 350;
+  @Prop chartHeight: number = 250;
   @State selectedPoint: number = -1;
   @State points: LineChartPoint[] = [];
   
   private canvasContext: CanvasRenderingContext2D | null = null;
-  private padding = { top: 20, right: 20, bottom: 40, left: 50 };
-  private chartWidth: number = 0;
-  private chartHeight: number = 0;
+  private chartPadding: ChartPadding = { top: 20, right: 20, bottom: 40, left: 50 };
+  private innerChartWidth: number = 0;
+  private innerChartHeight: number = 0;
   private minValue: number = 0;
   private maxValue: number = 0;
   private lineColor: string = '#4CAF50';
@@ -53,8 +63,8 @@ export struct LineChart {
       return;
     }
 
-    this.chartWidth = this.width - this.padding.left - this.padding.right;
-    this.chartHeight = this.height - this.padding.top - this.padding.bottom;
+    this.innerChartWidth = this.chartWidth - this.chartPadding.left - this.chartPadding.right;
+    this.innerChartHeight = this.chartHeight - this.chartPadding.top - this.chartPadding.bottom;
 
     // Find min and max values for scaling
     this.minValue = Math.min(...this.chartData.values, 0);
@@ -67,12 +77,12 @@ export struct LineChart {
 
     // Calculate points
     const points: LineChartPoint[] = [];
-    const stepX = this.chartWidth / Math.max(this.chartData.values.length - 1, 1);
+    const stepX = this.innerChartWidth / Math.max(this.chartData.values.length - 1, 1);
 
     this.chartData.values.forEach((value, index) => {
-      const x = this.padding.left + (index * stepX);
+      const x = this.chartPadding.left + (index * stepX);
       const normalizedValue = (value - this.minValue) / (this.maxValue - this.minValue);
-      const y = this.padding.top + this.chartHeight - (normalizedValue * this.chartHeight);
+      const y = this.chartPadding.top + this.innerChartHeight - (normalizedValue * this.innerChartHeight);
 
       points.push({
         x: x,
@@ -116,7 +126,7 @@ export struct LineChart {
    */
   private performDraw(context: CanvasRenderingContext2D) {
     // Clear canvas
-    context.clearRect(0, 0, this.width, this.height);
+    context.clearRect(0, 0, this.chartWidth, this.chartHeight);
 
     // Draw grid and axes
     this.drawGrid(context);
@@ -144,10 +154,10 @@ export struct LineChart {
     // Horizontal grid lines
     const gridLines = 5;
     for (let i = 0; i <= gridLines; i++) {
-      const y = this.padding.top + (this.chartHeight / gridLines) * i;
+      const y = this.chartPadding.top + (this.innerChartHeight / gridLines) * i;
       context.beginPath();
-      context.moveTo(this.padding.left, y);
-      context.lineTo(this.padding.left + this.chartWidth, y);
+      context.moveTo(this.chartPadding.left, y);
+      context.lineTo(this.chartPadding.left + this.innerChartWidth, y);
       context.stroke();
     }
 
@@ -155,10 +165,10 @@ export struct LineChart {
     const verticalLines = Math.min(this.points.length - 1, 10);
     if (verticalLines > 0) {
       for (let i = 0; i <= verticalLines; i++) {
-        const x = this.padding.left + (this.chartWidth / verticalLines) * i;
+        const x = this.chartPadding.left + (this.innerChartWidth / verticalLines) * i;
         context.beginPath();
-        context.moveTo(x, this.padding.top);
-        context.lineTo(x, this.padding.top + this.chartHeight);
+        context.moveTo(x, this.chartPadding.top);
+        context.lineTo(x, this.chartPadding.top + this.innerChartHeight);
         context.stroke();
       }
     }
@@ -173,14 +183,14 @@ export struct LineChart {
 
     // Y-axis
     context.beginPath();
-    context.moveTo(this.padding.left, this.padding.top);
-    context.lineTo(this.padding.left, this.padding.top + this.chartHeight);
+    context.moveTo(this.chartPadding.left, this.chartPadding.top);
+    context.lineTo(this.chartPadding.left, this.chartPadding.top + this.innerChartHeight);
     context.stroke();
 
     // X-axis
     context.beginPath();
-    context.moveTo(this.padding.left, this.padding.top + this.chartHeight);
-    context.lineTo(this.padding.left + this.chartWidth, this.padding.top + this.chartHeight);
+    context.moveTo(this.chartPadding.left, this.chartPadding.top + this.innerChartHeight);
+    context.lineTo(this.chartPadding.left + this.innerChartWidth, this.chartPadding.top + this.innerChartHeight);
     context.stroke();
 
     // Y-axis labels
@@ -202,8 +212,8 @@ export struct LineChart {
     const labelCount = 5;
     for (let i = 0; i <= labelCount; i++) {
       const value = this.minValue + ((this.maxValue - this.minValue) / labelCount) * (labelCount - i);
-      const y = this.padding.top + (this.chartHeight / labelCount) * i;
-      context.fillText(value.toFixed(0), this.padding.left - 5, y);
+      const y = this.chartPadding.top + (this.innerChartHeight / labelCount) * i;
+      context.fillText(value.toFixed(0), this.chartPadding.left - 5, y);
     }
   }
 
@@ -226,7 +236,7 @@ export struct LineChart {
         if (label.length > 10) {
           label = label.substring(5); // Show last part of date
         }
-        context.fillText(label, point.x, this.padding.top + this.chartHeight + 5);
+        context.fillText(label, point.x, this.chartPadding.top + this.innerChartHeight + 5);
       }
     });
   }
@@ -254,8 +264,8 @@ export struct LineChart {
     context.stroke();
 
     // Fill area under line (optional gradient effect)
-    context.lineTo(this.points[this.points.length - 1].x, this.padding.top + this.chartHeight);
-    context.lineTo(this.points[0].x, this.padding.top + this.chartHeight);
+    context.lineTo(this.points[this.points.length - 1].x, this.chartPadding.top + this.innerChartHeight);
+    context.lineTo(this.points[0].x, this.chartPadding.top + this.innerChartHeight);
     context.closePath();
     
     context.fillStyle = this.lineColor + '20'; // Add transparency
@@ -299,7 +309,7 @@ export struct LineChart {
     
     // Adjust if tooltip goes off screen
     if (boxX < 0) boxX = 0;
-    if (boxX + boxWidth > this.width) boxX = this.width - boxWidth;
+    if (boxX + boxWidth > this.chartWidth) boxX = this.chartWidth - boxWidth;
     if (boxY < 0) boxY = point.y + 10;
 
     // Draw box
@@ -317,12 +327,12 @@ export struct LineChart {
    * Draw empty state
    */
   private drawEmptyState(context: CanvasRenderingContext2D) {
-    context.clearRect(0, 0, this.width, this.height);
+    context.clearRect(0, 0, this.chartWidth, this.chartHeight);
     context.fillStyle = '#999999';
     context.font = '16px sans-serif';
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText('暂无数据', this.width / 2, this.height / 2);
+    context.fillText('暂无数据', this.chartWidth / 2, this.chartHeight / 2);
   }
 
   /**
@@ -352,8 +362,8 @@ export struct LineChart {
     Column() {
       // Canvas for line chart
       Canvas(this.canvasContext)
-        .width(this.width)
-        .height(this.height)
+        .width(this.chartWidth)
+        .height(this.chartHeight)
         .onReady(() => {
           if (this.canvasContext) {
             this.drawLineChart(this.canvasContext);

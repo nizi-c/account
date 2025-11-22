@@ -7,7 +7,6 @@
 
 import promptAction from '@ohos.promptAction';
 import hilog from '@ohos.hilog';
-
 /**
  * 错误类型枚举
  */
@@ -18,6 +17,14 @@ export enum ErrorType {
   DATA_INCONSISTENCY = 'data_inconsistency', // 数据不一致错误
   UNKNOWN = 'unknown'                  // 未知错误
 }
+/**
+ * 错误详情接口
+ */
+interface ErrorDetails {
+  originalError?: string | Error;
+  operation?: string;
+  field?: string;
+}
 
 /**
  * 应用错误类
@@ -25,14 +32,14 @@ export enum ErrorType {
 export class AppError extends Error {
   type: ErrorType;
   code?: string;
-  details?: any;
+  details?: ErrorDetails;
   recoverable: boolean;
 
   constructor(
     message: string,
     type: ErrorType = ErrorType.UNKNOWN,
     code?: string,
-    details?: any,
+    details?: ErrorDetails,
     recoverable: boolean = true
   ) {
     super(message);
@@ -56,12 +63,12 @@ export class ErrorHandler {
    */
   static handle(error: Error | AppError, showToUser: boolean = true): void {
     // 记录错误日志
-    this.logError(error);
+    ErrorHandler.logError(error);
 
     // 如果需要显示给用户
     if (showToUser) {
-      const userMessage = this.getUserMessage(error);
-      this.showErrorToast(userMessage);
+      const userMessage = ErrorHandler.getUserMessage(error);
+      ErrorHandler.showErrorToast(userMessage);
     }
   }
 
@@ -77,7 +84,7 @@ export class ErrorHandler {
       true
     );
     
-    this.handle(appError);
+    ErrorHandler.handle(appError);
     return appError;
   }
 
@@ -93,14 +100,14 @@ export class ErrorHandler {
       true
     );
     
-    this.handle(appError);
+    ErrorHandler.handle(appError);
     return appError;
   }
 
   /**
    * 处理数据不一致错误
    */
-  static handleDataInconsistencyError(message: string, details?: any): AppError {
+  static handleDataInconsistencyError(message: string, details?: ErrorDetails): AppError {
     const appError = new AppError(
       message,
       ErrorType.DATA_INCONSISTENCY,
@@ -109,7 +116,7 @@ export class ErrorHandler {
       false
     );
     
-    this.handle(appError);
+    ErrorHandler.handle(appError);
     return appError;
   }
 
@@ -118,11 +125,11 @@ export class ErrorHandler {
    */
   private static logError(error: Error | AppError): void {
     if (error instanceof AppError) {
-      hilog.error(this.DOMAIN, this.TAG, 
+      hilog.error(ErrorHandler.DOMAIN, ErrorHandler.TAG, 
         `[${error.type}] ${error.message} | Code: ${error.code} | Details: ${JSON.stringify(error.details)}`
       );
     } else {
-      hilog.error(this.DOMAIN, this.TAG, 
+      hilog.error(ErrorHandler.DOMAIN, ErrorHandler.TAG, 
         `[UNKNOWN] ${error.message} | Stack: ${error.stack}`
       );
     }
@@ -171,14 +178,15 @@ export class ErrorHandler {
     try {
       return await operation();
     } catch (error) {
+      const errorStr = error instanceof Error ? error.message : String(error);
       const appError = new AppError(
         errorMessage || '操作失败',
         ErrorType.UNKNOWN,
         undefined,
-        { originalError: error },
+        { originalError: errorStr },
         true
       );
-      this.handle(appError, showToUser);
+      ErrorHandler.handle(appError, showToUser);
       return null;
     }
   }
@@ -194,14 +202,15 @@ export class ErrorHandler {
     try {
       return operation();
     } catch (error) {
+      const errorStr = error instanceof Error ? error.message : String(error);
       const appError = new AppError(
         errorMessage || '操作失败',
         ErrorType.UNKNOWN,
         undefined,
-        { originalError: error },
+        { originalError: errorStr },
         true
       );
-      this.handle(appError, showToUser);
+      ErrorHandler.handle(appError, showToUser);
       return null;
     }
   }

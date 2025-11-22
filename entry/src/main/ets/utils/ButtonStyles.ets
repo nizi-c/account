@@ -55,12 +55,23 @@ export class ButtonStyles {
    * 需求：9.4 - 按钮样式（主要、次要、危险）
    */
   static getButtonStyle(type: ButtonStyleType, size: ButtonSize = ButtonSize.MEDIUM): ButtonStyleConfig {
-    const baseConfig = this.getBaseStyleByType(type);
-    const sizeConfig = this.getSizeConfig(size);
+    const baseConfig = ButtonStyles.getBaseStyleByType(type);
+    const sizeConfig = ButtonStyles.getSizeConfig(size);
     
+    // 手动合并配置，避免使用展开运算符
     return {
-      ...baseConfig,
-      ...sizeConfig
+      backgroundColor: baseConfig.backgroundColor || ThemeColors.PRIMARY,
+      fontColor: baseConfig.fontColor || Color.White,
+      borderColor: baseConfig.borderColor,
+      borderWidth: baseConfig.borderWidth,
+      height: sizeConfig.height || ThemeSizes.BUTTON_HEIGHT_MD,
+      paddingH: sizeConfig.paddingH || ThemeSpacing.MD,
+      fontSize: sizeConfig.fontSize || 16,
+      borderRadius: baseConfig.borderRadius || ThemeBorderRadius.BUTTON,
+      pressedBackgroundColor: baseConfig.pressedBackgroundColor,
+      pressedFontColor: baseConfig.pressedFontColor,
+      disabledBackgroundColor: baseConfig.disabledBackgroundColor,
+      disabledFontColor: baseConfig.disabledFontColor
     };
   }
   
@@ -149,7 +160,7 @@ export class ButtonStyles {
         };
       
       default:
-        return this.getBaseStyleByType(ButtonStyleType.PRIMARY);
+        return ButtonStyles.getBaseStyleByType(ButtonStyleType.PRIMARY);
     }
   }
   
@@ -180,34 +191,19 @@ export class ButtonStyles {
         };
       
       default:
-        return this.getSizeConfig(ButtonSize.MEDIUM);
+        return ButtonStyles.getSizeConfig(ButtonSize.MEDIUM);
     }
   }
-  
-  /**
-   * 应用按钮样式到 Button 组件
-   * 需求：9.5 - 视觉反馈（按压效果）
-   * 
-   * 使用示例：
-   * Button('确定')
-   *   .width(120)
-   *   .height(config.height)
-   *   .backgroundColor(config.backgroundColor)
-   *   .fontColor(config.fontColor)
-   *   .fontSize(config.fontSize)
-   *   .borderRadius(config.borderRadius)
-   *   .stateEffect(true)
-   */
-  static applyButtonStyle(button: any, config: ButtonStyleConfig): any {
-    return button
-      .height(config.height)
-      .padding({ left: config.paddingH, right: config.paddingH })
-      .backgroundColor(config.backgroundColor)
-      .fontColor(config.fontColor)
-      .fontSize(config.fontSize)
-      .borderRadius(config.borderRadius)
-      .stateEffect(true);
-  }
+}
+
+/**
+ * Icon button style config interface
+ */
+export interface IconButtonStyleConfig {
+  width: number;
+  height: number;
+  backgroundColor: string;
+  borderRadius: number;
 }
 
 /**
@@ -217,7 +213,7 @@ export class IconButtonStyles {
   /**
    * 获取圆形图标按钮样式
    */
-  static getCircleIconButton(size: number = 48, backgroundColor: string = ThemeColors.BG_SECONDARY): any {
+  static getCircleIconButton(size: number = 48, backgroundColor: string = ThemeColors.BG_SECONDARY): IconButtonStyleConfig {
     return {
       width: size,
       height: size,
@@ -229,7 +225,7 @@ export class IconButtonStyles {
   /**
    * 获取方形图标按钮样式
    */
-  static getSquareIconButton(size: number = 48, backgroundColor: string = ThemeColors.BG_SECONDARY): any {
+  static getSquareIconButton(size: number = 48, backgroundColor: string = ThemeColors.BG_SECONDARY): IconButtonStyleConfig {
     return {
       width: size,
       height: size,

@@ -189,14 +189,14 @@ export class TextStyles {
    * 收入文本样式
    */
   static getIncomeStyle(size: 'small' | 'medium' | 'large' = 'medium'): TextStyleConfig {
-    return this.getAmountStyle(true, size);
+    return TextStyles.getAmountStyle(true, size);
   }
   
   /**
    * 支出文本样式
    */
   static getExpenseStyle(size: 'small' | 'medium' | 'large' = 'medium'): TextStyleConfig {
-    return this.getAmountStyle(false, size);
+    return TextStyles.getAmountStyle(false, size);
   }
   
   /**
@@ -222,26 +222,4 @@ export class TextStyles {
   }
 }
 
-/**
- * 应用文本样式的辅助函数
- */
-export class TextStyleHelper {
-  /**
-   * 应用样式到 Text 组件
-   */
-  static applyStyle(text: any, config: TextStyleConfig): any {
-    let styledText = text
-      .fontSize(config.fontSize)
-      .fontColor(config.fontColor);
-    
-    if (config.fontWeight) {
-      styledText = styledText.fontWeight(config.fontWeight);
-    }
-    
-    if (config.lineHeight) {
-      styledText = styledText.lineHeight(config.lineHeight);
-    }
-    
-    return styledText;
-  }
-}
+

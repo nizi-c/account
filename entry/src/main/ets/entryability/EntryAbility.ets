@@ -29,9 +29,14 @@ export default class EntryAbility extends UIAbility {
       const store = await dbManager.initialize(this.context);
       
       // Create repositories
-      const categoryRepo = new CategoryRepository(store);
-      const achievementRepo = new AchievementRepository(store);
-      const transactionRepo = new TransactionRepository(store);
+      const categoryRepo = new CategoryRepository();
+      categoryRepo.setStore(store);
+      
+      const achievementRepo = new AchievementRepository();
+      achievementRepo.setStore(store);
+      
+      const transactionRepo = new TransactionRepository();
+      transactionRepo.setStore(store);
       
       // Create initialization service
       const initService = new InitializationService(categoryRepo, achievementRepo, transactionRepo);

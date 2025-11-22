@@ -13,21 +13,21 @@ import { ThemeColors, ThemeSpacing } from '../utils/ThemeConstants';
 @Component
 export struct LoadingIndicator {
   @Prop message?: string;
-  @Prop size?: number;
+  @Prop loadingSize?: number;
   @Prop color?: ResourceColor;
 
   build() {
     Column() {
       LoadingProgress()
-        .width(this.size || 48)
-        .height(this.size || 48)
-        .color(this.color || ThemeColors.primary)
+        .width(this.loadingSize || 48)
+        .height(this.loadingSize || 48)
+        .color(this.color || ThemeColors.PRIMARY)
 
       if (this.message) {
         Text(this.message)
           .fontSize(14)
-          .fontColor(ThemeColors.textSecondary)
-          .margin({ top: ThemeSpacing.md })
+          .fontColor(ThemeColors.TEXT_SECONDARY)
+          .margin({ top: ThemeSpacing.MD })
       }
     }
     .width('100%')
@@ -57,17 +57,17 @@ export struct FullScreenLoading {
         LoadingProgress()
           .width(48)
           .height(48)
-          .color(ThemeColors.primary)
+          .color(ThemeColors.PRIMARY)
 
         if (this.message) {
           Text(this.message)
             .fontSize(14)
-            .fontColor(ThemeColors.textPrimary)
-            .margin({ top: ThemeSpacing.md })
+            .fontColor(ThemeColors.TEXT_PRIMARY)
+            .margin({ top: ThemeSpacing.MD })
         }
       }
-      .padding(ThemeSpacing.xl)
-      .backgroundColor(ThemeColors.surface)
+      .padding(ThemeSpacing.XL)
+      .backgroundColor(ThemeColors.BG_PRIMARY)
       .borderRadius(12)
     }
     .width('100%')
@@ -81,24 +81,24 @@ export struct FullScreenLoading {
 @Component
 export struct InlineLoading {
   @Prop message?: string;
-  @Prop size?: number;
+  @Prop loadingSize?: number;
 
   build() {
     Row() {
       LoadingProgress()
-        .width(this.size || 24)
-        .height(this.size || 24)
-        .color(ThemeColors.primary)
+        .width(this.loadingSize || 24)
+        .height(this.loadingSize || 24)
+        .color(ThemeColors.PRIMARY)
 
       if (this.message) {
         Text(this.message)
           .fontSize(14)
-          .fontColor(ThemeColors.textSecondary)
-          .margin({ left: ThemeSpacing.sm })
+          .fontColor(ThemeColors.TEXT_SECONDARY)
+          .margin({ left: ThemeSpacing.SM })
       }
     }
     .width('100%')
-    .padding(ThemeSpacing.md)
+    .padding(ThemeSpacing.MD)
     .justifyContent(FlexAlign.Center)
   }
 }
